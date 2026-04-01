@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kevin's Class Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-light: #4a3f35;
+    --ink-faint: #8a7a6e;
+    --parchment: #faf7f2;
+    --parchment-dark: #f0ebe0;
+    --parchment-darker: #e4ddd0;
+    --cream: #fffdf8;
+    --accent: #8b3a2a;
+    --accent-warm: #c4622d;
+    --accent-gold: #b8860b;
+    --accent-gold-light: #f5e6a3;
+    --exam-bg: #fff8e1;
+    --exam-border: #e6ac00;
+    --exam-text: #7a5500;
+    --note-shadow: 0 2px 20px rgba(26,20,16,0.08), 0 1px 4px rgba(26,20,16,0.06);
+    --rule: 1px solid rgba(26,20,16,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* Subtle paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(26,20,16,0.3);
+  }
+
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+  }
+
+  .site-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--parchment);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .site-logo span.dot {
+    width: 6px; height: 6px;
+    background: var(--accent-warm);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .header-nav a {
+    color: rgba(250,247,242,0.7);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Source Serif 4', serif;
+    transition: color 0.2s;
+  }
+
+  .header-nav a:hover { color: var(--parchment); }
+
+  /* ── BANNER / WELCOME ── */
+  .banner {
+    background: var(--cream);
+    border-bottom: var(--rule);
+    text-align: center;
+    padding: 3.5rem 2rem 2.8rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 2px;
+    background: var(--accent);
+  }
+
+  .banner-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+
+  .banner h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+  }
+
+  .banner-sub {
+    font-size: 0.95rem;
+    color: var(--ink-faint);
+    font-style: italic;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ── NOTICE BAR ── */
+  .notice-bar {
+    background: #fef6e4;
+    border-top: 1px solid #f0d57c;
+    border-bottom: 1px solid #f0d57c;
+    padding: 0.65rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: #7a5500;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  .notice-icon { font-size: 1rem; }
+
+  /* ── LAYOUT ── */
+  .page-layout {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 3rem;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── MAIN NOTES ── */
+  .notes-main { min-width: 0; }
+
+  /* ── SECTION ── */
+  .note-section {
+    background: var(--cream);
+    border-radius: 4px;
+    box-shadow: var(--note-shadow);
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+    border: 1px solid var(--parchment-darker);
+  }
+
+  .section-header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 1.1rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    background: var(--accent);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .section-body {
+    padding: 1.8rem 2rem 2rem;
+  }
+
+  /* ── DEFINITION BLOCK ── */
+  .def-block {
+    border-left: 3px solid var(--accent);
+    padding: 0.9rem 1.2rem 0.9rem 1.4rem;
+    background: var(--parchment);
+    margin: 1.2rem 0;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .def-term {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .def-body {
+    color: var(--ink-light);
+    font-size: 0.97rem;
+    line-height: 1.7;
+  }
+
+  /* ── NOTE ENTRY ── */
+  .note-entry {
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+    border-bottom: var(--rule);
+    font-size: 0.97rem;
+    color: var(--ink-light);
+    line-height: 1.75;
+  }
+
+  .note-entry:last-child { border-bottom: none; }
+
+  .note-label {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* ── SUB-LIST ── */
+  .note-list {
+    list-style: none;
+    padding: 0.4rem 0 0 0.4rem;
+  }
+
+  .note-list li {
+    position: relative;
+    padding-left: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.96rem;
+    color: var(--ink-light);
+  }
+
+  .note-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── KEY POINT BLOCK ── */
+  .key-point {
+    background: var(--parchment-dark);
+    border: 1px solid var(--parchment-darker);
+    border-radius: 3px;
+    padding: 1rem 1.3rem;
+    margin: 1.2rem 0;
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .key-point strong {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  /* ── QUOTE BLOCK ── */
+  .closing-note {
+    border-top: var(--rule);
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 0.93rem;
+  }
+
+  /* ── SIDEBAR ── */
+  .notes-sidebar {
+    position: sticky;
+    top: 78px;
+  }
+
+  .sidebar-section {
+    background: var(--cream);
+    border: 1px solid var(--parchment-darker);
+    border-radius: 4px;
+    box-shadow: var(--note-shadow);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .sidebar-header {
+    padding: 0.7rem 1.1rem;
+    border-bottom: var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--parchment);
+  }
+
+  .sidebar-body { padding: 1rem 1.1rem; }
+
+  /* ── EXAM CARD ── */
+  .exam-card {
+    background: var(--exam-bg);
+    border: 2px solid var(--exam-border);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .exam-card:last-child { margin-bottom: 0; }
+
+  .exam-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--exam-text);
+    background: #fde68a;
+    border: 1px solid var(--exam-border);
+    border-radius: 2px;
+    padding: 0.15rem 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .exam-card p {
+    font-size: 0.9rem;
+    color: var(--exam-text);
+    line-height: 1.6;
+  }
+
+  /* ── ALSO INLINE EXAM POINT ── */
+  .inline-exam {
+    background: var(--exam-bg);
+    border-left: 3px solid var(--exam-border);
+    padding: 0.8rem 1.1rem;
+    margin: 1.2rem 0;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .inline-exam .exam-badge { margin-bottom: 0.4rem; }
+
+  .inline-exam p {
+    font-size: 0.95rem;
+    color: var(--exam-text);
+  }
+
+  /* ── TABLE OF CONTENTS ── */
+  .toc-list {
+    list-style: none;
+  }
+
+  .toc-list li {
+    margin-bottom: 0.5rem;
+  }
+
+  .toc-list a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-size: 0.88rem;
+    color: var(--ink-light);
+    transition: color 0.2s;
+    padding: 0.2rem 0;
+    border-bottom: 1px dotted transparent;
+  }
+
+  .toc-list a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .toc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    min-width: 1.2rem;
+  }
+
+  /* ── ADMIN LINK ── */
+  .admin-link-wrap {
+    text-align: center;
+    padding: 0.8rem;
+    border-top: var(--rule);
+    margin-top: 0.5rem;
+  }
+
+  .admin-link-wrap a {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+  }
+
+  .admin-link-wrap a:hover { color: var(--accent); }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    background: var(--ink);
+    color: rgba(250,247,242,0.5);
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.8rem;
+    font-family: 'Source Serif 4', serif;
+    letter-spacing: 0.03em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .site-footer a {
+    color: rgba(250,247,242,0.7);
+    text-decoration: none;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 720px) {
+    .page-layout {
+      grid-template-columns: 1fr;
+    }
+    .notes-sidebar {
+      position: static;
+      order: -1;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="site-logo">
+      <span class="dot"></span> Kevin's Class Notes
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Notes</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<!-- NOTICE -->
+<div class="notice-bar">
+  <span class="notice-icon">📖</span>
+  These notes are compiled by <strong>Kevin</strong> — all content is directly from class. For personal study use only.
+</div>
+
+<!-- BANNER -->
+<div class="banner">
+  <p class="banner-eyebrow">Classroom Notes · Shared by Kevin</p>
+  <h1>Study Notes</h1>
+  <p class="banner-sub">All material sourced directly from class lectures and discussions.</p>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="page-layout">
+
+  <!-- NOTES MAIN -->
+  <main class="notes-main">
+
+    <!-- SECTION 1: CREEDS -->
+    <article class="note-section" id="creeds">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <span class="section-title">Creeds</span>
+      </div>
+      <div class="section-body">
+
+        <div class="def-block">
+          <div class="def-term">Creed</div>
+          <div class="def-body">A creed is a summary of the principal articles of faith professed by a church or community of believers. In other words, it outlines the main beliefs of a particular religion or group.</div>
+        </div>
+
+        <div class="note-entry">
+          <div class="note-label">The Two Creeds</div>
+          <div class="key-point"><strong>Note:</strong> Both creeds are structured around the Trinity.</div>
+          <ul class="note-list">
+            <li><strong>Nicene Creed</strong></li>
+            <li><strong>Apostles' Creed</strong> — The summary of the beliefs of Jesus' chosen followers. On the day of Pentecost, the apostles composed the Apostles' Creed under the guidance of the Holy Spirit.</li>
+          </ul>
+        </div>
+
+        <div class="inline-exam">
+          <div class="exam-badge">⚠ Exam Point</div>
+          <p><strong>Doxology</strong> is a liturgical formula of Praise to God.</p>
+        </div>
+
+        <div class="note-entry">
+          <div class="note-label">Apostles' Creed — Narrative Structure</div>
+          <p>The Apostles' Creed is a narrative that tells the gospel's story, beginning with the one true God — one who is self-sufficient.</p>
+        </div>
+
+        <div class="note-entry">
+          <div class="note-label">The Holy Spirit</div>
+          <p>The Holy Spirit is the third person of the triune Godhead and does not appear until the latter portion of the creed. The confession of the Spirit coincides narratively with the sending of the Spirit at Pentecost, after the Ascension of Christ.</p>
+          <ul class="note-list" style="margin-top:0.7rem;">
+            <li>The Spirit empowers the gospel of Christ to build the church</li>
+            <li>Unites the saints in their spirits</li>
+            <li>Saves the lost</li>
+          </ul>
+        </div>
+
+        <div class="note-entry">
+          <div class="note-label">The Ending of the Creed</div>
+          <p>Finally, the creed ends with the new beginning — when the dead in Christ are raised incorruptible and the Lord's return ushers in the eternal joy of the new heaven and the new earth.</p>
+          <div class="closing-note">
+            "The life everlasting" corresponds to Jesus renewing all things — not simply our receiving a ticket to heaven when we die.
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+    <!-- SECTION 2: CRUSADES -->
+    <article class="note-section" id="crusades">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <span class="section-title">Crusades</span>
+      </div>
+      <div class="section-body">
+
+        <div class="note-entry">
+          <div class="note-label">The Call to Crusade</div>
+          <p>Pope Urban II, seeing a way to harness the violent energy of Christian knights, made a speech calling for them to take back Jerusalem at the Council of Clermont in <strong>November, 1095 AD</strong>. Thousands responded, resulting in the First Crusade.</p>
+        </div>
+
+        <div class="note-entry">
+          <div class="note-label">Political Motivations</div>
+          <p>There were political motivations for the Pope to get the Eastern Church to acknowledge him as the head of the whole church.</p>
+        </div>
+
+        <div class="inline-exam">
+          <div class="exam-badge">⚠ Test — Matching</div>
+          <p>Matching crusades will appear on the test. Be prepared to match each crusade with its key details.</p>
+        </div>
+
+      </div>
+    </article>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="notes-sidebar">
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="sidebar-section">
+      <div class="sidebar-header">Contents</div>
+      <div class="sidebar-body">
+        <ul class="toc-list">
+          <li><a href="#creeds"><span class="toc-num">01</span> Creeds</a></li>
+          <li><a href="#crusades"><span class="toc-num">02</span> Crusades</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- EXAM / TEST HIGHLIGHTS -->
+    <div class="sidebar-section">
+      <div class="sidebar-header">🔔 Exam &amp; Test Points</div>
+      <div class="sidebar-body">
+
+        <div class="exam-card">
+          <div class="exam-badge">⚠ Exam Point</div>
+          <p><strong>Doxology</strong> — a liturgical formula of Praise to God.</p>
+        </div>
+
+        <div class="exam-card">
+          <div class="exam-badge">⚠ Test — Matching</div>
+          <p>Matching <strong>the Crusades</strong> will be on the test.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="sidebar-section">
+      <div class="sidebar-body" style="text-align:center; padding: 0.8rem;">
+        <p style="font-size:0.8rem; color:var(--ink-faint); margin-bottom:0.5rem; font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:0.08em;">Admin Access</p>
+      </div>
+      <div class="admin-link-wrap">
+        <a href="admin.html">→ Edit Notes (Admin)</a>
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  Notes compiled by <strong style="color:rgba(250,247,242,0.85)">Kevin</strong> · All content from classroom · <a href="admin.html">Admin</a>
+</footer>
+
+</body>
+</html>

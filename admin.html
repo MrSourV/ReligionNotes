@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Kevin's Class Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-light: #4a3f35;
+    --ink-faint: #8a7a6e;
+    --parchment: #faf7f2;
+    --parchment-dark: #f0ebe0;
+    --parchment-darker: #e4ddd0;
+    --cream: #fffdf8;
+    --accent: #8b3a2a;
+    --accent-warm: #c4622d;
+    --exam-bg: #fff8e1;
+    --exam-border: #e6ac00;
+    --exam-text: #7a5500;
+    --note-shadow: 0 2px 20px rgba(26,20,16,0.08), 0 1px 4px rgba(26,20,16,0.06);
+    --rule: 1px solid rgba(26,20,16,0.12);
+    --success: #2d6a4f;
+    --success-bg: #d8f3dc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--ink);
+    color: var(--parchment);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(26,20,16,0.3);
+  }
+
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+  }
+
+  .site-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--parchment);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .site-logo .dot {
+    width: 6px; height: 6px;
+    background: var(--accent-warm);
+    border-radius: 50%;
+  }
+
+  .header-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+
+  .header-nav a {
+    color: rgba(250,247,242,0.7);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .header-nav a:hover { color: var(--parchment); }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 58px);
+    padding: 2rem;
+  }
+
+  .login-box {
+    background: var(--cream);
+    border: 1px solid var(--parchment-darker);
+    border-radius: 6px;
+    box-shadow: var(--note-shadow);
+    padding: 2.5rem 2.8rem;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+
+  .login-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .login-box h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .login-box p {
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+    margin-bottom: 1.8rem;
+  }
+
+  .input-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.4rem;
+  }
+
+  .input-group input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--parchment-darker);
+    border-radius: 3px;
+    background: var(--parchment);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus {
+    border-color: var(--accent);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--ink);
+    color: var(--parchment);
+    border: none;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-primary:hover { background: var(--accent); }
+
+  .login-error {
+    margin-top: 0.8rem;
+    font-size: 0.82rem;
+    color: var(--accent);
+    display: none;
+  }
+
+  /* ── ADMIN SCREEN ── */
+  #admin-screen {
+    display: none;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  .admin-page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .admin-subtitle {
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── EDITOR CARD ── */
+  .editor-card {
+    background: var(--cream);
+    border: 1px solid var(--parchment-darker);
+    border-radius: 4px;
+    box-shadow: var(--note-shadow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .editor-card-header {
+    background: var(--parchment-dark);
+    border-bottom: var(--rule);
+    padding: 0.9rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .editor-card-header .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    background: var(--accent);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .editor-title-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink);
+    outline: none;
+    min-width: 120px;
+  }
+
+  .editor-title-input:focus {
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .btn-small {
+    padding: 0.3rem 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .btn-danger {
+    border-color: #c0392b;
+    color: #c0392b;
+  }
+
+  .btn-danger:hover {
+    background: #c0392b;
+    color: white;
+  }
+
+  .editor-body {
+    padding: 1.2rem 1.4rem;
+  }
+
+  /* ── BLOCK EDITOR ── */
+  .block-list { margin-bottom: 1rem; }
+
+  .block-item {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    margin-bottom: 0.7rem;
+    padding: 0.6rem;
+    background: var(--parchment);
+    border: 1px solid var(--parchment-darker);
+    border-radius: 3px;
+  }
+
+  .block-type-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.45rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    margin-top: 0.3rem;
+    flex-shrink: 0;
+  }
+
+  .badge-definition { background: #fde0d0; color: var(--accent); }
+  .badge-note { background: var(--parchment-dark); color: var(--ink-faint); }
+  .badge-exam { background: #fde68a; color: var(--exam-text); }
+  .badge-keypoint { background: #d4edda; color: #155724; }
+
+  .block-textarea {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9rem;
+    color: var(--ink);
+    outline: none;
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.6;
+    width: 100%;
+  }
+
+  .block-textarea:focus {
+    border-bottom: 1px solid var(--accent);
+  }
+
+  .block-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-faint);
+    font-size: 1rem;
+    padding: 0.2rem;
+    line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  .block-remove:hover { color: #c0392b; }
+
+  /* ── ADD BLOCK CONTROLS ── */
+  .add-block-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .btn-add-block {
+    padding: 0.35rem 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px dashed;
+    border-radius: 2px;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.2s;
+  }
+
+  .btn-add-definition { border-color: var(--accent); color: var(--accent); }
+  .btn-add-definition:hover { background: #fde0d0; }
+  .btn-add-note { border-color: var(--ink-faint); color: var(--ink-faint); }
+  .btn-add-note:hover { background: var(--parchment-dark); }
+  .btn-add-exam { border-color: var(--exam-border); color: var(--exam-text); }
+  .btn-add-exam:hover { background: var(--exam-bg); }
+  .btn-add-keypoint { border-color: #28a745; color: #155724; }
+  .btn-add-keypoint:hover { background: #d4edda; }
+
+  /* ── ADD SECTION ── */
+  .add-section-wrap {
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .btn-add-section {
+    padding: 0.7rem 1.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 2px dashed var(--ink-faint);
+    border-radius: 3px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--ink-faint);
+    transition: all 0.2s;
+  }
+
+  .btn-add-section:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── SAVE BAR ── */
+  .save-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--ink);
+    padding: 0.9rem 2rem;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 200;
+    box-shadow: 0 -2px 16px rgba(26,20,16,0.3);
+  }
+
+  .save-bar.visible { display: flex; }
+
+  .save-info {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(250,247,242,0.6);
+    letter-spacing: 0.06em;
+  }
+
+  .save-info strong { color: var(--parchment); }
+
+  .save-actions { display: flex; gap: 0.8rem; }
+
+  .btn-save {
+    padding: 0.55rem 1.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-save-primary {
+    background: var(--accent-warm);
+    color: white;
+  }
+
+  .btn-save-primary:hover { background: var(--accent); }
+
+  .btn-save-preview {
+    background: transparent;
+    border: 1px solid rgba(250,247,242,0.3);
+    color: rgba(250,247,242,0.8);
+  }
+
+  .btn-save-preview:hover {
+    background: rgba(250,247,242,0.1);
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    top: 80px; right: 2rem;
+    background: var(--success);
+    color: white;
+    padding: 0.7rem 1.2rem;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    z-index: 300;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── PREVIEW MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,20,16,0.7);
+    z-index: 400;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    background: var(--cream);
+    border-radius: 6px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 40px rgba(26,20,16,0.4);
+  }
+
+  .modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: var(--cream);
+  }
+
+  .modal-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--ink-faint);
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--accent); }
+
+  .modal-body { padding: 1.5rem; }
+
+  .modal-section { margin-bottom: 1.8rem; }
+  .modal-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    border-bottom: var(--rule);
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .modal-block { margin-bottom: 0.6rem; font-size: 0.9rem; line-height: 1.65; }
+  .modal-block.definition { color: var(--accent); font-weight: 600; }
+  .modal-block.exam { color: var(--exam-text); background: var(--exam-bg); padding: 0.4rem 0.7rem; border-radius: 2px; }
+  .modal-block.keypoint { color: #155724; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="site-logo">
+      <span class="dot"></span> Kevin's Class Notes
+    </a>
+    <div style="display:flex;align-items:center;gap:1.2rem;">
+      <span class="header-badge">Admin</span>
+      <nav class="header-nav">
+        <a href="index.html">← View Notes</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-icon">🔐</div>
+    <h2>Admin Access</h2>
+    <p>Enter the password to edit notes.</p>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') tryLogin()">
+    </div>
+    <button class="btn-primary" onclick="tryLogin()">Enter Admin</button>
+    <p class="login-error" id="login-error">Incorrect password. Try again.</p>
+  </div>
+</div>
+
+<!-- ADMIN SCREEN -->
+<div id="admin-screen">
+  <h1 class="admin-page-title">Edit Notes</h1>
+  <p class="admin-subtitle">Changes are saved to your browser. Export the HTML when ready to push to GitHub.</p>
+
+  <div id="sections-container"></div>
+
+  <div class="add-section-wrap">
+    <button class="btn-add-section" onclick="addSection()">+ Add New Section</button>
+  </div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar" id="save-bar">
+  <div class="save-info"><strong>Unsaved changes</strong> — remember to export when done</div>
+  <div class="save-actions">
+    <button class="btn-save btn-save-preview" onclick="openPreview()">Preview</button>
+    <button class="btn-save btn-save-primary" onclick="saveAndExport()">Save &amp; Export HTML</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Exported successfully</div>
+
+<!-- PREVIEW MODAL -->
+<div class="modal-overlay" id="preview-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Note Preview</h3>
+      <button class="modal-close" onclick="closePreview()">✕</button>
+    </div>
+    <div class="modal-body" id="preview-body"></div>
+  </div>
+</div>
+
+<script>
+// ── ADMIN PASSWORD ──
+// Change this to whatever password you want!
+const ADMIN_PASSWORD = 'kevin123';
+
+// ── DEFAULT NOTES DATA ──
+const defaultNotes = [
+  {
+    id: 'creeds',
+    title: 'Creeds',
+    blocks: [
+      { type: 'definition', text: 'Creed: A creed is a summary of the principal articles of faith professed by a church or community of believers. In other words, it outlines the main beliefs of a particular religion or group.' },
+      { type: 'note', text: 'The Two Creeds:\n• Nicene Creed\n• Apostles\' Creed: The summary of the beliefs of Jesus\' chosen followers. On the day of Pentecost, the apostles composed the Apostles\' Creed under the guidance of the Holy Spirit.' },
+      { type: 'keypoint', text: 'Both creeds are structured around the Trinity.' },
+      { type: 'exam', text: 'EXAM POINT: Doxology is a liturgical formula of Praise to God.' },
+      { type: 'note', text: 'Apostles\' Creed: A narrative that tells the gospel\'s story! Beginning with the one true God — one who is self-sufficient.' },
+      { type: 'note', text: 'The Holy Spirit:\nThe Holy Spirit is the third person of the triune Godhead, doesn\'t appear until the latter portion of the creed.\nConfession of the spirit coincides narratively with the sending of the Spirit at Pentecost after the ascension of Christ.\nThe Spirit empowers the gospel of Christ to build the church, unite the saints in their spirits, and save the lost.' },
+      { type: 'note', text: 'The Ending:\nFinally, the creed ends with the new beginning when the dead in Christ are raised incorruptible and the Lord\'s return ushers in the eternal joy of the new heaven and the new earth.\nThis is what "the life everlasting" corresponds to — Jesus renewing all things, not simply our receiving a ticket to heaven when we die.' }
+    ]
+  },
+  {
+    id: 'crusades',
+    title: 'Crusades',
+    blocks: [
+      { type: 'note', text: 'Pope Urban II, seeing a way to harness the violent energy of Christian knights, made a speech calling for them to take back Jerusalem at the Council of Clermont in November, 1095 AD. Thousands responded resulting in the First Crusade.' },
+      { type: 'note', text: 'There were political motivations for the Pope to get the Eastern church to acknowledge him as the head of the whole church.' },
+      { type: 'exam', text: 'TEST: Matching crusades will be on the test.' }
+    ]
+  }
+];
+
+let notes = JSON.parse(localStorage.getItem('kevins-notes') || 'null') || defaultNotes;
+let dirty = false;
+
+// ── LOGIN ──
+function tryLogin() {
+  const val = document.getElementById('password-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    renderEditor();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+// ── RENDER EDITOR ──
+function renderEditor() {
+  const container = document.getElementById('sections-container');
+  container.innerHTML = '';
+  notes.forEach((section, si) => {
+    container.appendChild(buildSectionEditor(section, si));
+  });
+}
+
+function buildSectionEditor(section, si) {
+  const card = document.createElement('div');
+  card.className = 'editor-card';
+  card.dataset.si = si;
+
+  card.innerHTML = `
+    <div class="editor-card-header">
+      <span class="section-num">${String(si+1).padStart(2,'0')}</span>
+      <input type="text" class="editor-title-input" value="${escHtml(section.title)}" placeholder="Section Title" onchange="updateTitle(${si}, this.value)">
+      <button class="btn-small btn-danger" onclick="removeSection(${si})">Remove</button>
+    </div>
+    <div class="editor-body">
+      <div class="block-list" id="blocks-${si}"></div>
+      <div class="add-block-row">
+        <button class="btn-add-block btn-add-definition" onclick="addBlock(${si}, 'definition')">+ Definition</button>
+        <button class="btn-add-block btn-add-note" onclick="addBlock(${si}, 'note')">+ Note</button>
+        <button class="btn-add-block btn-add-exam" onclick="addBlock(${si}, 'exam')">+ Exam/Test Point</button>
+        <button class="btn-add-block btn-add-keypoint" onclick="addBlock(${si}, 'keypoint')">+ Key Point</button>
+      </div>
+    </div>
+  `;
+
+  const blockList = card.querySelector(`#blocks-${si}`);
+  section.blocks.forEach((block, bi) => {
+    blockList.appendChild(buildBlockEditor(block, si, bi));
+  });
+
+  return card;
+}
+
+function buildBlockEditor(block, si, bi) {
+  const item = document.createElement('div');
+  item.className = 'block-item';
+  const labels = { definition: 'Definition', note: 'Note', exam: '⚠ Exam/Test', keypoint: 'Key Point' };
+  const badgeClasses = { definition: 'badge-definition', note: 'badge-note', exam: 'badge-exam', keypoint: 'badge-keypoint' };
+  item.innerHTML = `
+    <span class="block-type-badge ${badgeClasses[block.type]}">${labels[block.type]}</span>
+    <textarea class="block-textarea" oninput="updateBlock(${si}, ${bi}, this.value)">${escHtml(block.text)}</textarea>
+    <button class="block-remove" onclick="removeBlock(${si}, ${bi})" title="Remove block">✕</button>
+  `;
+  return item;
+}
+
+// ── MUTATIONS ──
+function markDirty() {
+  dirty = true;
+  document.getElementById('save-bar').classList.add('visible');
+}
+
+function updateTitle(si, val) {
+  notes[si].title = val;
+  markDirty();
+}
+
+function updateBlock(si, bi, val) {
+  notes[si].blocks[bi].text = val;
+  markDirty();
+}
+
+function addBlock(si, type) {
+  notes[si].blocks.push({ type, text: '' });
+  markDirty();
+  renderEditor();
+}
+
+function removeBlock(si, bi) {
+  if (!confirm('Remove this block?')) return;
+  notes[si].blocks.splice(bi, 1);
+  markDirty();
+  renderEditor();
+}
+
+function addSection() {
+  notes.push({ id: 'section-' + Date.now(), title: 'New Section', blocks: [] });
+  markDirty();
+  renderEditor();
+}
+
+function removeSection(si) {
+  if (!confirm('Remove this entire section?')) return;
+  notes.splice(si, 1);
+  markDirty();
+  renderEditor();
+}
+
+// ── PREVIEW ──
+function openPreview() {
+  const body = document.getElementById('preview-body');
+  body.innerHTML = '';
+  notes.forEach(section => {
+    const sec = document.createElement('div');
+    sec.className = 'modal-section';
+    sec.innerHTML = `<div class="modal-section-title">${escHtml(section.title)}</div>`;
+    section.blocks.forEach(block => {
+      const p = document.createElement('div');
+      p.className = `modal-block ${block.type}`;
+      p.textContent = block.text;
+      sec.appendChild(p);
+    });
+    body.appendChild(sec);
+  });
+  document.getElementById('preview-modal').classList.add('open');
+}
+
+function closePreview() {
+  document.getElementById('preview-modal').classList.remove('open');
+}
+
+// ── SAVE & EXPORT ──
+function saveAndExport() {
+  localStorage.setItem('kevins-notes', JSON.stringify(notes));
+  generateAndDownloadHTML();
+  dirty = false;
+  showToast('✓ Saved & exported!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function generateAndDownloadHTML() {
+  const html = buildIndexHTML(notes);
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+}
+
+function buildIndexHTML(notes) {
+  let sectionsHTML = '';
+  let tocHTML = '';
+  let examSidebarHTML = '';
+  let sectionNum = 1;
+
+  notes.forEach(section => {
+    const num = String(sectionNum).padStart(2, '0');
+    tocHTML += `<li><a href="#${escAttr(section.id)}"><span class="toc-num">${num}</span> ${escHtml(section.title)}</a></li>`;
+
+    let blocksHTML = '';
+    section.blocks.forEach(block => {
+      if (block.type === 'definition') {
+        const parts = block.text.split(':');
+        const term = parts[0] || '';
+        const def = parts.slice(1).join(':').trim();
+        blocksHTML += `<div class="def-block"><div class="def-term">${escHtml(term)}</div><div class="def-body">${escHtml(def)}</div></div>`;
+      } else if (block.type === 'exam') {
+        blocksHTML += `<div class="inline-exam"><div class="exam-badge">⚠ Exam Point</div><p>${escHtml(block.text)}</p></div>`;
+        examSidebarHTML += `<div class="exam-card"><div class="exam-badge">⚠ Exam/Test</div><p>${escHtml(block.text)}</p></div>`;
+      } else if (block.type === 'keypoint') {
+        blocksHTML += `<div class="key-point">${escHtml(block.text)}</div>`;
+      } else {
+        // Split into lines for note-label / note-body
+        const lines = block.text.split('\n');
+        const title = lines[0];
+        const rest = lines.slice(1).join('\n');
+        blocksHTML += `<div class="note-entry"><div class="note-label">${escHtml(title)}</div><p>${escHtml(rest).replace(/\n/g,'<br>')}</p></div>`;
+      }
+    });
+
+    sectionsHTML += `
+      <article class="note-section" id="${escAttr(section.id)}">
+        <div class="section-header">
+          <span class="section-number">${num}</span>
+          <span class="section-title">${escHtml(section.title)}</span>
+        </div>
+        <div class="section-body">${blocksHTML}</div>
+      </article>`;
+    sectionNum++;
+  });
+
+  // Full page template (mirrors index.html styles)
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kevin's Class Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1410;--ink-light:#4a3f35;--ink-faint:#8a7a6e;--parchment:#faf7f2;--parchment-dark:#f0ebe0;--parchment-darker:#e4ddd0;--cream:#fffdf8;--accent:#8b3a2a;--accent-warm:#c4622d;--exam-bg:#fff8e1;--exam-border:#e6ac00;--exam-text:#7a5500;--note-shadow:0 2px 20px rgba(26,20,16,.08),0 1px 4px rgba(26,20,16,.06);--rule:1px solid rgba(26,20,16,.12)}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{background:var(--parchment);color:var(--ink);font-family:'Source Serif 4',Georgia,serif;font-size:17px;line-height:1.75;min-height:100vh}.site-header{background:var(--ink);color:var(--parchment);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(26,20,16,.3)}.header-inner{max-width:960px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px}.site-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:var(--parchment);text-decoration:none;display:flex;align-items:center;gap:.6rem}.site-logo .dot{width:6px;height:6px;background:var(--accent-warm);border-radius:50%}.header-nav{display:flex;gap:2rem;align-items:center}.header-nav a{color:rgba(250,247,242,.7);text-decoration:none;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;transition:color .2s}.header-nav a:hover{color:var(--parchment)}.banner{background:var(--cream);border-bottom:var(--rule);text-align:center;padding:3.5rem 2rem 2.8rem;position:relative;overflow:hidden}.banner::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80px;height:2px;background:var(--accent)}.banner-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:.8rem}.banner h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:.6rem}.banner-sub{font-size:.95rem;color:var(--ink-faint);font-style:italic;max-width:480px;margin:0 auto}.notice-bar{background:#fef6e4;border-top:1px solid #f0d57c;border-bottom:1px solid #f0d57c;padding:.65rem 2rem;display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:.82rem;color:#7a5500;font-family:'Source Serif 4',serif}.page-layout{max-width:960px;margin:0 auto;padding:3rem 2rem 6rem;display:grid;grid-template-columns:1fr 260px;gap:3rem;align-items:start}.notes-main{min-width:0}.note-section{background:var(--cream);border-radius:4px;box-shadow:var(--note-shadow);margin-bottom:2.5rem;overflow:hidden;border:1px solid var(--parchment-darker)}.section-header{background:var(--ink);color:var(--cream);padding:1.1rem 1.8rem;display:flex;align-items:center;gap:.8rem}.section-number{font-family:'JetBrains Mono',monospace;font-size:.68rem;background:var(--accent);color:#fff;padding:.15rem .5rem;border-radius:2px;letter-spacing:.06em}.section-title{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:600;letter-spacing:.02em}.section-body{padding:1.8rem 2rem 2rem}.def-block{border-left:3px solid var(--accent);padding:.9rem 1.2rem .9rem 1.4rem;background:var(--parchment);margin:1.2rem 0;border-radius:0 3px 3px 0}.def-term{font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;color:var(--accent);margin-bottom:.3rem}.def-body{color:var(--ink-light);font-size:.97rem;line-height:1.7}.note-entry{margin:1rem 0;padding:.8rem 1rem;border-bottom:var(--rule);font-size:.97rem;color:var(--ink-light);line-height:1.75}.note-entry:last-child{border-bottom:none}.note-label{font-family:'Playfair Display',serif;font-weight:600;color:var(--ink);font-size:1rem;margin-bottom:.25rem}.key-point{background:var(--parchment-dark);border:1px solid var(--parchment-darker);border-radius:3px;padding:1rem 1.3rem;margin:1.2rem 0;font-size:.95rem;color:var(--ink);font-style:italic}.inline-exam{background:var(--exam-bg);border-left:3px solid var(--exam-border);padding:.8rem 1.1rem;margin:1.2rem 0;border-radius:0 3px 3px 0}.exam-badge{display:inline-flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--exam-text);background:#fde68a;border:1px solid var(--exam-border);border-radius:2px;padding:.15rem .5rem;margin-bottom:.5rem}.inline-exam p{font-size:.95rem;color:var(--exam-text)}.notes-sidebar{position:sticky;top:78px}.sidebar-section{background:var(--cream);border:1px solid var(--parchment-darker);border-radius:4px;box-shadow:var(--note-shadow);margin-bottom:1.5rem;overflow:hidden}.sidebar-header{padding:.7rem 1.1rem;border-bottom:var(--rule);font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);background:var(--parchment)}.sidebar-body{padding:1rem 1.1rem}.exam-card{background:var(--exam-bg);border:2px solid var(--exam-border);border-radius:4px;padding:1rem 1.2rem;margin-bottom:.9rem}.exam-card:last-child{margin-bottom:0}.exam-card p{font-size:.9rem;color:var(--exam-text);line-height:1.6}.toc-list{list-style:none}.toc-list li{margin-bottom:.5rem}.toc-list a{display:flex;align-items:center;gap:.5rem;text-decoration:none;font-size:.88rem;color:var(--ink-light);transition:color .2s;padding:.2rem 0;border-bottom:1px dotted transparent}.toc-list a:hover{color:var(--accent);border-bottom-color:var(--accent)}.toc-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ink-faint);min-width:1.2rem}.admin-link-wrap{text-align:center;padding:.8rem;border-top:var(--rule);margin-top:.5rem}.admin-link-wrap a{font-size:.78rem;color:var(--ink-faint);text-decoration:none;font-family:'JetBrains Mono',monospace;letter-spacing:.06em;transition:color .2s}.admin-link-wrap a:hover{color:var(--accent)}.site-footer{background:var(--ink);color:rgba(250,247,242,.5);text-align:center;padding:2rem;font-size:.8rem;font-family:'Source Serif 4',serif;letter-spacing:.03em}.site-footer a{color:rgba(250,247,242,.7);text-decoration:none}@media(max-width:720px){.page-layout{grid-template-columns:1fr}.notes-sidebar{position:static;order:-1}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="site-logo"><span class="dot"></span> Kevin's Class Notes</a>
+    <nav class="header-nav"><a href="index.html">Notes</a><a href="admin.html">Admin</a></nav>
+  </div>
+</header>
+<div class="notice-bar"><span>📖</span> These notes are compiled by <strong>Kevin</strong> — all content is directly from class. For personal study use only.</div>
+<div class="banner">
+  <p class="banner-eyebrow">Classroom Notes · Shared by Kevin</p>
+  <h1>Study Notes</h1>
+  <p class="banner-sub">All material sourced directly from class lectures and discussions.</p>
+</div>
+<div class="page-layout">
+  <main class="notes-main">${sectionsHTML}</main>
+  <aside class="notes-sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-header">Contents</div>
+      <div class="sidebar-body"><ul class="toc-list">${tocHTML}</ul></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-header">🔔 Exam &amp; Test Points</div>
+      <div class="sidebar-body">${examSidebarHTML || '<p style="font-size:.85rem;color:var(--ink-faint)">No exam points yet.</p>'}</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-body" style="text-align:center;padding:.8rem;"><p style="font-size:.8rem;color:var(--ink-faint);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em">Admin Access</p></div>
+      <div class="admin-link-wrap"><a href="admin.html">→ Edit Notes (Admin)</a></div>
+    </div>
+  </aside>
+</div>
+<footer class="site-footer">Notes compiled by <strong style="color:rgba(250,247,242,.85)">Kevin</strong> · All content from classroom · <a href="admin.html">Admin</a></footer>
+</body></html>`;
+}
+
+// ── UTILS ──
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function escAttr(str) {
+  return String(str || '').replace(/"/g,'&quot;');
+}
+
+// Close modal on overlay click
+document.getElementById('preview-modal').addEventListener('click', function(e) {
+  if (e.target === this) closePreview();
+});
+
+// Focus password input
+setTimeout(() => document.getElementById('password-input').focus(), 100);
+</script>
+</body>
+</html>
